@@ -35,7 +35,6 @@ export const TaskItem: React.FC<TaskItemProps> = ({
             onChange={() => onToggle(task.id)}
             aria-label={`Позначити "${task.title}" як ${task.completed ? 'невиконане' : 'виконане'}`}
           />
-          <span className="task-item__custom-check" aria-hidden="true" />
         </label>
       </div>
 
