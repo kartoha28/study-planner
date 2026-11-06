@@ -26,14 +26,17 @@ export const TaskItem: React.FC<TaskItemProps> = ({
       data-testid={`task-item-${task.id}`}
     >
       <div className="task-item__status">
-        <input
-          id={`task-checkbox-${task.id}`}
-          type="checkbox"
-          className="task-item__checkbox"
-          checked={task.completed}
-          onChange={() => onToggle(task.id)}
-          aria-label={`Позначити завдання "${task.title}" як ${task.completed ? 'невиконане' : 'виконане'}`}
-        />
+        <label className="task-item__checkbox-wrapper" htmlFor={`task-checkbox-${task.id}`}>
+          <input
+            id={`task-checkbox-${task.id}`}
+            type="checkbox"
+            className="task-item__checkbox"
+            checked={task.completed}
+            onChange={() => onToggle(task.id)}
+            aria-label={`Позначити "${task.title}" як ${task.completed ? 'невиконане' : 'виконане'}`}
+          />
+          <span className="task-item__custom-check" aria-hidden="true" />
+        </label>
       </div>
 
       <div className="task-item__content">
@@ -49,7 +52,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
               {priorityInfo.label}
             </span>
             <span className="task-item__category">
-              📁 {task.category}
+              {task.category}
             </span>
           </div>
         </div>
@@ -63,10 +66,27 @@ export const TaskItem: React.FC<TaskItemProps> = ({
         <button
           type="button"
           className="task-item__delete-btn"
-          title={`Видалити завдання "${task.title}"`}
+          title={`Видалити "${task.title}"`}
           onClick={() => onDelete(task.id)}
+          aria-label={`Видалити завдання ${task.title}`}
         >
-          🗑️
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.75"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M3 6h18" />
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+            <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+            <line x1="10" y1="11" x2="10" y2="17" />
+            <line x1="14" y1="11" x2="14" y2="17" />
+          </svg>
         </button>
       </div>
     </li>

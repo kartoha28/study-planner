@@ -125,7 +125,7 @@ export const App: React.FC = () => {
 
       <footer className="footer">
         <p className="footer__text">
-          Study Planner • Виконав: Владислав Іванів • Лабораторна робота №8
+          Study Planner • Владислав Іванів
         </p>
       </footer>
     </div>
