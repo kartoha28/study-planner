@@ -1,10 +1,10 @@
 import React from 'react';
+import { useTaskContext } from '../hooks/useTaskContext';
 import type { Priority, Task } from '../types/task';
+import './TaskItem.scss';
 
 interface TaskItemProps {
   task: Task;
-  onToggle: (id: number) => void;
-  onDelete: (id: number) => void;
 }
 
 const PRIORITY_LABELS: Record<Priority, { label: string; modifier: string }> = {
@@ -13,26 +13,32 @@ const PRIORITY_LABELS: Record<Priority, { label: string; modifier: string }> = {
   low: { label: 'Низький', modifier: 'task-item__priority--low' },
 };
 
-export const TaskItem: React.FC<TaskItemProps> = ({
-  task,
-  onToggle,
-  onDelete,
-}) => {
+export const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
+  const { toggleTask, requestDelete, startEditTask, pendingDeletion } =
+    useTaskContext();
+
   const priorityInfo = PRIORITY_LABELS[task.priority];
+  const isPendingDelete = pendingDeletion?.ids.includes(task.id) ?? false;
 
   return (
     <li
-      className={`task-item ${task.completed ? 'task-item--completed' : ''}`}
+      className={`task-item ${task.completed ? 'task-item--completed' : ''} ${
+        isPendingDelete ? 'task-item--pending-delete' : ''
+      }`}
       data-testid={`task-item-${task.id}`}
     >
       <div className="task-item__status">
-        <label className="task-item__checkbox-wrapper" htmlFor={`task-checkbox-${task.id}`}>
+        <label
+          className="task-item__checkbox-wrapper"
+          htmlFor={`task-checkbox-${task.id}`}
+        >
           <input
             id={`task-checkbox-${task.id}`}
             type="checkbox"
             className="task-item__checkbox"
             checked={task.completed}
-            onChange={() => onToggle(task.id)}
+            disabled={isPendingDelete}
+            onChange={() => toggleTask(task.id)}
             aria-label={`Позначити "${task.title}" як ${task.completed ? 'невиконане' : 'виконане'}`}
           />
         </label>
@@ -50,9 +56,10 @@ export const TaskItem: React.FC<TaskItemProps> = ({
             <span className={`task-item__priority ${priorityInfo.modifier}`}>
               {priorityInfo.label}
             </span>
-            <span className="task-item__category">
-              {task.category}
-            </span>
+            <span className="task-item__category">{task.category}</span>
+            {isPendingDelete && (
+              <span className="task-item__pending-badge">Буде видалено</span>
+            )}
           </div>
         </div>
 
@@ -64,9 +71,34 @@ export const TaskItem: React.FC<TaskItemProps> = ({
       <div className="task-item__actions">
         <button
           type="button"
-          className="task-item__delete-btn"
+          className="task-item__action-btn task-item__action-btn--edit"
+          title={`Редагувати "${task.title}"`}
+          disabled={isPendingDelete}
+          onClick={() => startEditTask(task)}
+          aria-label={`Редагувати завдання ${task.title}`}
+        >
+          <svg
+            width="15"
+            height="15"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.75"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+          </svg>
+        </button>
+
+        <button
+          type="button"
+          className="task-item__action-btn task-item__action-btn--delete"
           title={`Видалити "${task.title}"`}
-          onClick={() => onDelete(task.id)}
+          disabled={isPendingDelete}
+          onClick={() => requestDelete(task.id)}
           aria-label={`Видалити завдання ${task.title}`}
         >
           <svg

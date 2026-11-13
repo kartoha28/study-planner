@@ -1,26 +1,32 @@
 import React, { useState } from 'react';
-import type { NewTaskDto, Priority } from '../types/task';
-
-interface TaskFormProps {
-  onAddTask: (taskDto: NewTaskDto) => void;
-}
+import { useTaskContext } from '../hooks/useTaskContext';
+import type { Priority } from '../types/task';
+import './TaskForm.scss';
 
 const CATEGORY_SUGGESTIONS = [
   'React',
   'TypeScript',
   'Веб-системи',
   'Архітектура ПЗ',
-  'Комп\'ютерна графіка',
+  "Комп'ютерна графіка",
   'Англійська',
+  'Styling',
   'Інше',
 ];
 
-export const TaskForm: React.FC<TaskFormProps> = ({ onAddTask }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [category, setCategory] = useState('React');
-  const [priority, setPriority] = useState<Priority>('medium');
+export const TaskForm: React.FC = () => {
+  const { editingTask, addTask, updateTask, cancelEditTask } = useTaskContext();
+
+  const isEditMode = editingTask !== null;
+  const [isExpanded, setIsExpanded] = useState(isEditMode);
+  const [title, setTitle] = useState(editingTask?.title ?? '');
+  const [description, setDescription] = useState(
+    editingTask?.description ?? '',
+  );
+  const [category, setCategory] = useState(editingTask?.category ?? 'React');
+  const [priority, setPriority] = useState<Priority>(
+    editingTask?.priority ?? 'medium',
+  );
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -28,18 +34,25 @@ export const TaskForm: React.FC<TaskFormProps> = ({ onAddTask }) => {
 
     const trimmedTitle = title.trim();
     if (!trimmedTitle) {
-      setError('Назва завдання є обов\'язковою та не може бути порожньою');
+      setError("Назва завдання є обов'язковою та не може бути порожньою");
       return;
     }
 
-    onAddTask({
+    const dto = {
       title: trimmedTitle,
       description: description.trim(),
       category: category.trim() || 'Загальне',
       priority,
-    });
+    };
 
-    // Очищення форми
+    if (editingTask) {
+      updateTask(editingTask.id, dto);
+      return;
+    }
+
+    addTask(dto);
+
+    // Очищення форми після створення
     setTitle('');
     setDescription('');
     setCategory('React');
@@ -50,6 +63,10 @@ export const TaskForm: React.FC<TaskFormProps> = ({ onAddTask }) => {
 
   const handleCancel = () => {
     setError(null);
+    if (isEditMode) {
+      cancelEditTask();
+      return;
+    }
     setIsExpanded(false);
   };
 
@@ -83,24 +100,46 @@ export const TaskForm: React.FC<TaskFormProps> = ({ onAddTask }) => {
             <line x1="12" y1="5" x2="12" y2="19" />
             <line x1="5" y1="12" x2="19" y2="12" />
           </svg>
-          <span className="task-form-trigger__text">Створити нове завдання</span>
+          <span className="task-form-trigger__text">
+            Створити нове завдання
+          </span>
         </button>
       </div>
     );
   }
 
   return (
-    <section className="task-form-wrapper" aria-label="Секція додавання завдання">
-      <form className="task-form" onSubmit={handleSubmit} noValidate>
+    <section
+      className="task-form-wrapper"
+      aria-label={
+        isEditMode ? 'Секція редагування завдання' : 'Секція додавання завдання'
+      }
+    >
+      <form
+        className={`task-form ${isEditMode ? 'task-form--editing' : ''}`}
+        onSubmit={handleSubmit}
+        noValidate
+      >
         <div className="task-form__header">
-          <h2 className="task-form__heading">Нове завдання</h2>
+          <h2 className="task-form__heading">
+            {isEditMode ? 'Редагувати завдання' : 'Нове завдання'}
+          </h2>
           <button
             type="button"
             className="task-form__close-btn"
             title="Закрити форму"
             onClick={handleCancel}
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
               <line x1="18" y1="6" x2="6" y2="18" />
               <line x1="6" y1="6" x2="18" y2="18" />
             </svg>
@@ -108,7 +147,6 @@ export const TaskForm: React.FC<TaskFormProps> = ({ onAddTask }) => {
         </div>
 
         <div className="task-form__grid">
-          {/* Поле: Назва (обов'язкове) */}
           <div className="task-form__field task-form__field--title">
             <label className="task-form__label" htmlFor="task-title">
               Назва завдання <span className="task-form__required">*</span>
@@ -117,7 +155,7 @@ export const TaskForm: React.FC<TaskFormProps> = ({ onAddTask }) => {
               id="task-title"
               type="text"
               className={`task-form__input ${error ? 'task-form__input--invalid' : ''}`}
-              placeholder="Наприклад: Підготувати звіт до лабораторної №8"
+              placeholder="Наприклад: Підготувати звіт до лабораторної №9"
               value={title}
               autoFocus
               onChange={handleTitleChange}
@@ -125,7 +163,6 @@ export const TaskForm: React.FC<TaskFormProps> = ({ onAddTask }) => {
             {error && <span className="task-form__error">{error}</span>}
           </div>
 
-          {/* Поле: Категорія */}
           <div className="task-form__field">
             <label className="task-form__label" htmlFor="task-category">
               Категорія / Предмет
@@ -146,7 +183,6 @@ export const TaskForm: React.FC<TaskFormProps> = ({ onAddTask }) => {
             </datalist>
           </div>
 
-          {/* Поле: Пріоритет */}
           <div className="task-form__field">
             <label className="task-form__label" htmlFor="task-priority">
               Пріоритет
@@ -163,7 +199,6 @@ export const TaskForm: React.FC<TaskFormProps> = ({ onAddTask }) => {
             </select>
           </div>
 
-          {/* Поле: Опис */}
           <div className="task-form__field task-form__field--full">
             <label className="task-form__label" htmlFor="task-description">
               Короткий опис / Нотатки
@@ -188,7 +223,7 @@ export const TaskForm: React.FC<TaskFormProps> = ({ onAddTask }) => {
             Скасувати
           </button>
           <button type="submit" className="task-form__submit-btn">
-            Створити завдання
+            {isEditMode ? 'Зберегти зміни' : 'Створити завдання'}
           </button>
         </div>
       </form>

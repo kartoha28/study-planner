@@ -1,26 +1,27 @@
 import React from 'react';
+import { useTaskContext } from '../hooks/useTaskContext';
 import { TaskItem } from './TaskItem';
-import type { Task } from '../types/task';
+import './TaskList.scss';
 
-interface TaskListProps {
-  tasks: Task[];
-  totalTasksCount: number;
-  onToggle: (id: number) => void;
-  onDelete: (id: number) => void;
-}
+export const TaskList: React.FC = () => {
+  const { displayedTasks: tasks, totalCount: totalTasksCount } =
+    useTaskContext();
 
-export const TaskList: React.FC<TaskListProps> = ({
-  tasks,
-  totalTasksCount,
-  onToggle,
-  onDelete,
-}) => {
   // Умовний рендеринг: випадок 1 — коли взагалі немає жодного завдання
   if (totalTasksCount === 0) {
     return (
       <div className="task-list__empty">
         <div className="task-list__empty-icon" aria-hidden="true">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <svg
+            width="40"
+            height="40"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
             <polyline points="14 2 14 8 20 8" />
             <line x1="12" y1="18" x2="12" y2="12" />
@@ -40,7 +41,16 @@ export const TaskList: React.FC<TaskListProps> = ({
     return (
       <div className="task-list__empty">
         <div className="task-list__empty-icon" aria-hidden="true">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <svg
+            width="40"
+            height="40"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             <circle cx="11" cy="11" r="8" />
             <line x1="21" y1="21" x2="16.65" y2="16.65" />
           </svg>
@@ -56,12 +66,7 @@ export const TaskList: React.FC<TaskListProps> = ({
   return (
     <ul className="task-list" aria-label="Список навчальних завдань">
       {tasks.map((task) => (
-        <TaskItem
-          key={task.id}
-          task={task}
-          onToggle={onToggle}
-          onDelete={onDelete}
-        />
+        <TaskItem key={task.id} task={task} />
       ))}
     </ul>
   );
