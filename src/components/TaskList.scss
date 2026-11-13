@@ -1,0 +1,35 @@
+@use '../styles/variables' as *;
+
+.task-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+
+  &__empty {
+    text-align: center;
+    padding: 2.75rem 1.5rem;
+    background: $color-input-bg;
+    border: 1px dashed $color-border;
+    border-radius: $radius-md;
+  }
+
+  &__empty-icon {
+    color: $color-text-dim;
+    margin-bottom: 0.75rem;
+    display: flex;
+    justify-content: center;
+  }
+
+  &__empty-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: $color-text;
+    margin-bottom: 0.25rem;
+  }
+
+  &__empty-subtitle {
+    font-size: 0.85rem;
+    color: $color-text-muted;
+  }
+}

@@ -1,0 +1,52 @@
+// ==========================================
+// Modern Dark Theme & Pastel Design Tokens
+// ==========================================
+$font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+// Base dark colors
+$color-bg: #0c0e14;
+$color-surface: #141721;
+$color-surface-hover: #1b1e2b;
+$color-surface-card: #181b26;
+$color-input-bg: #0f1119;
+$color-border: #232736;
+$color-border-hover: #33384c;
+
+// Typography colors
+$color-text: #f1f3f9;
+$color-text-muted: #8d95a5;
+$color-text-dim: #5c6375;
+
+// Pastel accent colors
+$color-primary: #818cf8;             // Pastel Indigo
+$color-primary-hover: #9ca3af;
+$color-primary-btn-bg: #818cf8;
+$color-primary-btn-text: #0c0e14;
+
+$color-success: #86efac;             // Pastel Mint
+$color-danger: #fca5a5;              // Pastel Coral / Rose
+$color-warning: #fde047;             // Pastel Amber / Yellow
+
+// Pastel Priority Tags
+$priority-high-bg: rgba(248, 113, 113, 0.12);
+$priority-high-text: #fca5a5;
+$priority-high-border: rgba(248, 113, 113, 0.28);
+
+$priority-medium-bg: rgba(251, 191, 36, 0.12);
+$priority-medium-text: #fde047;
+$priority-medium-border: rgba(251, 191, 36, 0.28);
+
+$priority-low-bg: rgba(56, 189, 248, 0.12);
+$priority-low-text: #7dd3fc;
+$priority-low-border: rgba(56, 189, 248, 0.28);
+
+// Category tag
+$category-bg: rgba(167, 139, 250, 0.12);
+$category-text: #c4b5fd;
+$category-border: rgba(167, 139, 250, 0.25);
+
+// Radii & Shadows
+$radius-sm: 6px;
+$radius-md: 10px;
+$radius-lg: 14px;
+$shadow-card: 0 4px 20px rgba(0, 0, 0, 0.25);

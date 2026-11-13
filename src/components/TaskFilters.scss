@@ -1,0 +1,124 @@
+@use '../styles/variables' as *;
+
+.task-filters {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding-bottom: 1.15rem;
+  margin-bottom: 1.15rem;
+  border-bottom: 1px solid $color-border;
+
+  &__group {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+  }
+
+  &__btn {
+    background: $color-input-bg;
+    border: 1px solid $color-border;
+    color: $color-text-muted;
+    font-family: inherit;
+    font-size: 0.825rem;
+    font-weight: 500;
+    padding: 0.4rem 0.75rem;
+    border-radius: $radius-sm;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: all 0.15s ease;
+
+    &:hover {
+      background: $color-surface-hover;
+      color: $color-text;
+      border-color: $color-border-hover;
+    }
+
+    &--active {
+      background: $color-primary;
+      border-color: $color-primary;
+      color: #0c0e14;
+      font-weight: 600;
+
+      &:hover {
+        background: $color-primary;
+        color: #0c0e14;
+      }
+
+      .task-filters__badge {
+        background: rgba(0, 0, 0, 0.2);
+        color: #0c0e14;
+      }
+    }
+  }
+
+  &__badge {
+    background: rgba(255, 255, 255, 0.08);
+    color: $color-text-muted;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.15rem 0.4rem;
+    border-radius: 10px;
+    line-height: 1;
+  }
+
+  &__controls {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    flex-wrap: wrap;
+  }
+
+  &__sort-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+
+  &__sort-label {
+    font-size: 0.8rem;
+    color: $color-text-muted;
+    font-weight: 500;
+  }
+
+  &__sort-select {
+    font-family: inherit;
+    font-size: 0.8rem;
+    background: $color-input-bg;
+    border: 1px solid $color-border;
+    border-radius: $radius-sm;
+    padding: 0.4rem 0.65rem;
+    color: $color-text;
+    cursor: pointer;
+    transition: border-color 0.15s ease;
+
+    &:focus {
+      outline: none;
+      border-color: $color-primary;
+    }
+  }
+
+  &__clear-btn {
+    background: transparent;
+    border: 1px solid rgba(248, 113, 113, 0.25);
+    color: $color-danger;
+    font-family: inherit;
+    font-size: 0.775rem;
+    font-weight: 500;
+    padding: 0.4rem 0.65rem;
+    border-radius: $radius-sm;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    transition: all 0.15s ease;
+
+    &:hover {
+      background: rgba(248, 113, 113, 0.1);
+      border-color: $color-danger;
+    }
+  }
+}
