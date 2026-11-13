@@ -19,3 +19,19 @@ export interface NewTaskDto {
   category: string;
   priority: Priority;
 }
+
+export interface PendingDeletion {
+  ids: number[];
+  mode: 'single' | 'completed';
+  label: string;
+}
+
+export type ToastType = 'success' | 'warning' | 'error' | 'info';
+
+export interface ToastMessage {
+  id: number;
+  text: string;
+  type: ToastType;
+  durationMs: number;
+  hasUndo?: boolean;
+}
