@@ -1,0 +1,50 @@
+@use '../styles/variables' as *;
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+  padding-top: 1.15rem;
+  border-top: 1px solid $color-border;
+
+  &__info {
+    font-size: 0.825rem;
+    color: $color-text-muted;
+  }
+
+  &__controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  &__btn {
+    background: $color-input-bg;
+    border: 1px solid $color-border;
+    color: $color-text;
+    font-family: inherit;
+    font-size: 0.825rem;
+    font-weight: 500;
+    padding: 0.45rem 0.85rem;
+    border-radius: $radius-sm;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    transition: all 0.15s ease;
+
+    &:hover:not(:disabled) {
+      background: $color-surface-hover;
+      border-color: $color-primary;
+      color: $color-primary;
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+}

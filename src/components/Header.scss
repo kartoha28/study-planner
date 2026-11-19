@@ -39,7 +39,7 @@
     letter-spacing: -0.02em;
   }
 
-  &__reset-btn {
+  &__refresh-btn {
     background: transparent;
     border: 1px solid $color-border;
     color: $color-text-muted;
@@ -54,10 +54,15 @@
     gap: 0.4rem;
     transition: all 0.15s ease;
 
-    &:hover {
+    &:hover:not(:disabled) {
       background: $color-surface-hover;
       border-color: $color-border-hover;
       color: $color-text;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
   }
 }

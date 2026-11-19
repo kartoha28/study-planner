@@ -1,22 +1,29 @@
 import React, { useState } from 'react';
-import { useTaskContext } from '../hooks/useTaskContext';
-import type { Priority } from '../types/task';
+import type { NewTaskDto, Priority, Task } from '../types/task';
 import './TaskForm.scss';
+
+interface TaskFormProps {
+  editingTask: Task | null;
+  onAddTask: (dto: NewTaskDto) => Promise<void>;
+  onUpdateTask: (id: number, dto: NewTaskDto) => Promise<void>;
+  onCancelEdit: () => void;
+}
 
 const CATEGORY_SUGGESTIONS = [
   'React',
   'TypeScript',
   'Веб-системи',
   'Архітектура ПЗ',
-  "Комп'ютерна графіка",
-  'Англійська',
-  'Styling',
+  'General',
   'Інше',
 ];
 
-export const TaskForm: React.FC = () => {
-  const { editingTask, addTask, updateTask, cancelEditTask } = useTaskContext();
-
+export const TaskForm: React.FC<TaskFormProps> = ({
+  editingTask,
+  onAddTask,
+  onUpdateTask,
+  onCancelEdit,
+}) => {
   const isEditMode = editingTask !== null;
   const [isExpanded, setIsExpanded] = useState(isEditMode);
   const [title, setTitle] = useState(editingTask?.title ?? '');
@@ -28,8 +35,9 @@ export const TaskForm: React.FC = () => {
     editingTask?.priority ?? 'medium',
   );
   const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const trimmedTitle = title.trim();
@@ -38,33 +46,44 @@ export const TaskForm: React.FC = () => {
       return;
     }
 
-    const dto = {
+    const dto: NewTaskDto = {
       title: trimmedTitle,
       description: description.trim(),
-      category: category.trim() || 'Загальне',
+      category: category.trim() || 'General',
       priority,
     };
 
-    if (editingTask) {
-      updateTask(editingTask.id, dto);
-      return;
-    }
-
-    addTask(dto);
-
-    // Очищення форми після створення
-    setTitle('');
-    setDescription('');
-    setCategory('React');
-    setPriority('medium');
+    setIsSubmitting(true);
     setError(null);
-    setIsExpanded(false);
+
+    try {
+      if (editingTask) {
+        await onUpdateTask(editingTask.id, dto);
+        return;
+      }
+
+      await onAddTask(dto);
+      setTitle('');
+      setDescription('');
+      setCategory('React');
+      setPriority('medium');
+      setIsExpanded(false);
+    } catch (err) {
+      const msg =
+        err instanceof Error ? err.message : 'Не вдалося зберегти завдання';
+      setError(msg);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleCancel = () => {
+    if (isSubmitting) {
+      return;
+    }
     setError(null);
     if (isEditMode) {
-      cancelEditTask();
+      onCancelEdit();
       return;
     }
     setIsExpanded(false);
@@ -128,6 +147,7 @@ export const TaskForm: React.FC = () => {
             type="button"
             className="task-form__close-btn"
             title="Закрити форму"
+            disabled={isSubmitting}
             onClick={handleCancel}
           >
             <svg
@@ -155,8 +175,9 @@ export const TaskForm: React.FC = () => {
               id="task-title"
               type="text"
               className={`task-form__input ${error ? 'task-form__input--invalid' : ''}`}
-              placeholder="Наприклад: Підготувати звіт до лабораторної №9"
+              placeholder="Наприклад: Інтегрувати REST API у Study Planner"
               value={title}
+              disabled={isSubmitting}
               autoFocus
               onChange={handleTitleChange}
             />
@@ -174,6 +195,7 @@ export const TaskForm: React.FC = () => {
               className="task-form__input"
               placeholder="Категорія"
               value={category}
+              disabled={isSubmitting}
               onChange={(e) => setCategory(e.target.value)}
             />
             <datalist id="categories-list">
@@ -191,6 +213,7 @@ export const TaskForm: React.FC = () => {
               id="task-priority"
               className="task-form__select"
               value={priority}
+              disabled={isSubmitting}
               onChange={(e) => setPriority(e.target.value as Priority)}
             >
               <option value="low">Низький</option>
@@ -209,6 +232,7 @@ export const TaskForm: React.FC = () => {
               rows={2}
               placeholder="Деталі, дедлайн, посилання на матеріали..."
               value={description}
+              disabled={isSubmitting}
               onChange={(e) => setDescription(e.target.value)}
             />
           </div>
@@ -218,12 +242,21 @@ export const TaskForm: React.FC = () => {
           <button
             type="button"
             className="task-form__cancel-btn"
+            disabled={isSubmitting}
             onClick={handleCancel}
           >
             Скасувати
           </button>
-          <button type="submit" className="task-form__submit-btn">
-            {isEditMode ? 'Зберегти зміни' : 'Створити завдання'}
+          <button
+            type="submit"
+            className="task-form__submit-btn"
+            disabled={isSubmitting}
+          >
+            {isSubmitting
+              ? 'Збереження...'
+              : isEditMode
+                ? 'Зберегти зміни'
+                : 'Створити завдання'}
           </button>
         </div>
       </form>

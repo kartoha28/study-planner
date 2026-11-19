@@ -1,10 +1,13 @@
 import React from 'react';
-import { useTaskContext } from '../hooks/useTaskContext';
+import type { ToastMessage } from '../types/task';
 import './Toast.scss';
 
-export const Toast: React.FC = () => {
-  const { toast, undoDelete, dismissToast } = useTaskContext();
+interface ToastProps {
+  toast: ToastMessage | null;
+  onDismiss: () => void;
+}
 
+export const Toast: React.FC<ToastProps> = ({ toast, onDismiss }) => {
   if (!toast) {
     return null;
   }
@@ -18,20 +21,11 @@ export const Toast: React.FC = () => {
       <div className="toast__body">
         <span className="toast__message">{toast.text}</span>
         <div className="toast__actions">
-          {toast.hasUndo && (
-            <button
-              type="button"
-              className="toast__undo-btn"
-              onClick={undoDelete}
-            >
-              Скасувати
-            </button>
-          )}
           <button
             type="button"
             className="toast__close-btn"
             aria-label="Закрити сповіщення"
-            onClick={dismissToast}
+            onClick={onDismiss}
           >
             <svg
               width="15"
@@ -50,16 +44,6 @@ export const Toast: React.FC = () => {
           </button>
         </div>
       </div>
-
-      {toast.hasUndo && (
-        <div className="toast__progress">
-          <div
-            key={toast.id}
-            className="toast__progress-bar"
-            style={{ animationDuration: `${toast.durationMs}ms` }}
-          />
-        </div>
-      )}
     </div>
   );
 };

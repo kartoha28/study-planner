@@ -1,14 +1,17 @@
 import React from 'react';
-import { useTaskContext } from '../hooks/useTaskContext';
 import './TaskStats.scss';
 
-export const TaskStats: React.FC = () => {
-  const {
-    totalCount: total,
-    completedCount: completed,
-    uncompletedCount: uncompleted,
-  } = useTaskContext();
+interface TaskStatsProps {
+  total: number;
+  completed: number;
+  uncompleted: number;
+}
 
+export const TaskStats: React.FC<TaskStatsProps> = ({
+  total,
+  completed,
+  uncompleted,
+}) => {
   const completionPercentage =
     total > 0 ? Math.round((completed / total) * 100) : 0;
 
@@ -36,7 +39,7 @@ export const TaskStats: React.FC = () => {
         </div>
         <div className="task-stats__info">
           <span className="task-stats__number">{total}</span>
-          <span className="task-stats__label">Всього завдань</span>
+          <span className="task-stats__label">На сторінці</span>
         </div>
       </div>
 

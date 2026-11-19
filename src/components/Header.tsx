@@ -1,10 +1,12 @@
 import React from 'react';
-import { useTaskContext } from '../hooks/useTaskContext';
 import './Header.scss';
 
-export const Header: React.FC = () => {
-  const { resetTasks } = useTaskContext();
+interface HeaderProps {
+  isLoading: boolean;
+  onRefresh: () => void;
+}
 
+export const Header: React.FC<HeaderProps> = ({ isLoading, onRefresh }) => {
   return (
     <header className="header">
       <div className="header__container">
@@ -34,9 +36,10 @@ export const Header: React.FC = () => {
 
         <button
           type="button"
-          className="header__reset-btn"
-          title="Повернути початковий список завдань"
-          onClick={resetTasks}
+          className="header__refresh-btn"
+          title="Оновити список із сервера"
+          disabled={isLoading}
+          onClick={onRefresh}
         >
           <svg
             width="14"
@@ -49,10 +52,11 @@ export const Header: React.FC = () => {
             strokeLinejoin="round"
             aria-hidden="true"
           >
-            <polyline points="1 4 1 10 7 10" />
-            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
+            <polyline points="23 4 23 10 17 10" />
+            <polyline points="1 20 1 14 7 14" />
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
           </svg>
-          <span>Скинути дані</span>
+          <span>{isLoading ? 'Завантаження...' : 'Оновити'}</span>
         </button>
       </div>
     </header>
