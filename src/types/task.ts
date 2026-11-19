@@ -4,6 +4,8 @@ export type FilterStatus = 'all' | 'completed' | 'uncompleted';
 
 export type SortOrder = 'default' | 'priority-desc' | 'priority-asc';
 
+export type AsyncStatus = 'idle' | 'loading' | 'success' | 'error';
+
 export interface Task {
   id: number;
   title: string;
@@ -20,11 +22,9 @@ export interface NewTaskDto {
   priority: Priority;
 }
 
-export interface PendingDeletion {
-  ids: number[];
-  mode: 'single' | 'completed';
-  label: string;
-}
+export type UpdateTaskDto = Partial<
+  Pick<Task, 'title' | 'description' | 'completed' | 'priority' | 'category'>
+>;
 
 export type ToastType = 'success' | 'warning' | 'error' | 'info';
 
@@ -33,5 +33,4 @@ export interface ToastMessage {
   text: string;
   type: ToastType;
   durationMs: number;
-  hasUndo?: boolean;
 }
